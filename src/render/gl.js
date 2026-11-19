@@ -119,7 +119,7 @@ void main(){
   float l = dot(c, vec3(0.3, 0.59, 0.11));
   vec3 b = c * smoothstep(uThr, 1.0, l) * 0.8;
   vec2 tp = vec2(vUV.x, 1.0 - vUV.y);
-  b += texture2D(uEmiS, tp).rgb * uGI * 0.9 + texture2D(uEmiD, tp).rgb * 1.25;
+  b += texture2D(uEmiS, tp).rgb * uGI * 0.75 + texture2D(uEmiD, tp).rgb * 0.85;
   gl_FragColor = vec4(b, 1.0);
 }`;
 

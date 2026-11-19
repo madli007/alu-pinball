@@ -267,7 +267,7 @@ export class Renderer {
         parFloor: [-c.x / W * 0.35, -c.y / H * 0.35], parTop: [0, 0],
         specX: 300 + 150 * Math.sin(time * 0.17) + (ballsX - 300) * 0.3 + c.x * 3,
         balls: game.balls.filter(b => !b.captured), flashes: fl,
-        bloomThr: 0.72, bloomK: q.bloom ? 1.05 : 0,
+        bloomThr: 0.8, bloomK: q.bloom ? 0.7 : 0,
         zoom: c.zoom, zc: c.zc, shake, fade: c.fade, sat: c.sat,
         ca: q.ca ? 0.002 + Math.min(0.008, Math.hypot(c.vx, c.vy) / 60000) : 0,
         heatAmt: q.heat ? 0.6 + game.heat * 1.4 : 0, heatPos: [SCOOP.x, SCOOP.y - 30],
