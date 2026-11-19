@@ -34,3 +34,7 @@ Zadnja posodobitev: 2026-11-19
 - Dejansko poslušanje zvoka/glasbe (preverjeno le, da se ustvari brez napak).
 - Pravi telefon in pravi gamepad (le emulacija velikosti zaslona; gamepad koda ni testirana s strojno opremo).
 - Občutek igranja z roko pri 60 fps (pregledovalnik je bil skrit/omejen na ~30 fps; fizika je testirana skriptno).
+
+## Naslednje (za morebitno novo sejo)
+- Vsi koraki iz `PROMPT.md` so opravljeni in commitani (`6bf03cd`). Ostane le ročni preizkus: zvok, pravi telefon,
+  gamepad in občutek igranja pri 60 fps. Po spremembah fizike vedno zaženi `node tests/run-node.mjs`.
