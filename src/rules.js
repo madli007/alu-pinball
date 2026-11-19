@@ -451,7 +451,7 @@ export class Game {
       this.emit('lock', { n: this.locks });
       if (this.locks < 2) {
         this.balls.splice(this.balls.indexOf(b), 1);   // žoga ostane v talilnici (vidno)
-        this.say(N.lock[0] + ' ZAKLENJENO', 'še ' + N.lock[1] + ' za MULTIBALL', PAL.code, { anim: 'zoom' });
+        this.say('LOCK: ' + N.lock[0], 'še ' + N.lock[1] + ' za MULTIBALL', PAL.code, { anim: 'zoom' });
         this.spawnLater(1.6, () => this.serveBall());
       } else {
         this.locks = 0;

@@ -48,7 +48,7 @@ Igra se samodejno ustavi, ko zavihek ali okno izgubi fokus. Pred izstrelitvijo f
 
 **Strele:** levi orbit s spinnerjem (**Impol FT · valjarna**), rampa (**Impol PCP · stiskalnica**, dvignjena pot, vrne žogico na levi inlane),
 livarna (**Impol LLT**, scoop desno), B·U·G drop tarče (Alcad kontrola kakovosti), Code review tarča (Alcad, mystery **Alcloud**),
-A·L·U kanali zgoraj, 3 pop bumperji »Al 13« (**Slovenska Bistrica · Sevojno · Šibenik**), slingshota in kickback (**Stampal SB**).
+A·L·U kanali zgoraj, 3 pop bumperji »Al 13« (**Impol · Impol Seval · Impol-TLM**), slingshota in kickback (**Stampal SB**).
 
 | Dogodek | Podjetje |
 |---|---|
@@ -57,7 +57,7 @@ A·L·U kanali zgoraj, 3 pop bumperji »Al 13« (**Slovenska Bistrica · Sevojno
 | ball save | **Impol R in R** |
 | ball search (zataknjena žogica) | **Impol Servis** |
 | extra ball, add-a-ball | **Rondela** (Rondal) |
-| locka | **Sevojno**, **Šibenik** |
+| locka | **Impol Seval**, **Impol-TLM** |
 | jackpot / super jackpot | **FT jackpot**, **PCP jackpot** / **New York** (Impol Aluminum Corp.) |
 
 - **A·L·U kanali** → bonus množitelj ×2 … ×6. Flipperja premikata prižgane luči (lane change).

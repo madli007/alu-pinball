@@ -23,8 +23,8 @@ export const CFG = {
     servis: 'IMPOL SERVIS',                           // ball search
     kadri: 'KADRING',                                 // HR: začetek igre, bonus
     mystery: 'ALCLOUD',                               // Alcad
-    bumperji: ['SLOVENSKA BISTRICA', 'SEVOJNO', 'ŠIBENIK'],
-    lock: ['SEVOJNO', 'ŠIBENIK'],
+    bumperji: ['IMPOL', 'IMPOL SEVAL', 'IMPOL-TLM'],  // Slovenska Bistrica, Sevojno (Srbija), Šibenik (Hrvaška)
+    lock: ['IMPOL SEVAL', 'IMPOL-TLM'],
     superJackpot: 'NEW YORK',                         // Impol Aluminum Corp.
     podjetja: 'LLT · PCP · FT · STAMPAL SB · RONDAL · SEVAL · TLM · ALCAD',
   },

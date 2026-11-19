@@ -51,7 +51,7 @@ Miza že ima tovarniško postavitev, zato se podjetja lepo ujemajo z obstoječim
 | Talilnica (scoop, desno) | TALILNICA | **IMPOL LLT · LIVARNA** | LLT lije drogove, žogica gre »v peč« |
 | Rampa | IZTISKOVALNA STISKALNICA | **IMPOL PCP · STISKALNICA** | PCP iztiskuje profile; rampa je »profil« |
 | Levi orbit + spinner | VALJARNA | **IMPOL FT · VALJARNA** | FT valja folijo; spinner »navija« trak |
-| 3 pop bumperji | Al 13 | **SLOVENSKA BISTRICA · SEVOJNO · ŠIBENIK** (po en bumper, spodaj še »Al 13«) | tri proizvodne lokacije skupine |
+| 3 pop bumperji | Al 13 | **IMPOL · IMPOL SEVAL · IMPOL-TLM** (po en bumper, spodaj še »Al 13«) | tri proizvodna podjetja skupine (Slovenska Bistrica, Sevojno, Šibenik) |
 | Slingshota | — | **STAMPAL SB** (kovaška kladiva) | sling »kuje« žogico nazaj |
 | Kickback (levi outlane) | KICKBACK | **STAMPAL KICKBACK** | udarec kladiva |
 | Extra ball | EXTRA BALL | **RONDELA!** (»Rondal ti je izsekal novo žogico«) | rondela je okrogla kot žogica |
@@ -65,7 +65,7 @@ Miza že ima tovarniško postavitev, zato se podjetja lepo ujemajo z obstoječim
 
 ### Multiball in jackpoti: skupina po svetu
 
-- **Lock 1 → »SEVOJNO ZAKLENJENO«**, **Lock 2 → »ŠIBENIK ZAKLENJENO«**, multiball = **»SKUPINA IMPOL«** (3 žogice = 3 države).
+- **Lock 1 → »LOCK: IMPOL SEVAL«**, **Lock 2 → Impol-TLM** (sproži multiball), multiball = **»SKUPINA IMPOL«** (3 žogice = 3 države).
 - **Jackpot** na orbitu = **»FT JACKPOT«**, na rampi = **»PCP JACKPOT«**.
 - **Super jackpot** v livarni = **»IZVOZ V NEW YORK«** (Impol Aluminum Corp.) ali **»50 TRGOV«**.
 - **Add-a-ball** = **»NOVA RONDELA«**.
