@@ -2,7 +2,7 @@
    DINAMIČNI SLOJ — vse, kar se premika ali sveti (vsak frame)
    g = barvni sloj, e = emisijski sloj (bloom), oba v logičnih koordinatah
    ===================================================================== */
-import { TAU, BR, PAL, MODES } from '../config.js';
+import { TAU, BR, PAL, MODES, CFG } from '../config.js';
 import { PLUNGER_Y, SCOOP, SPINNER, RAMP } from '../table.js';
 import { lampShape } from './art.js';
 
@@ -126,7 +126,7 @@ export function drawSlings(g, e, T) {
     g.rotate(s.side === 'L' ? 1.1 : -1.1);
     g.font = `800 8px ${FONT_T}`; g.textAlign = 'center'; g.textBaseline = 'middle';
     g.fillStyle = 'rgba(255,235,210,.75)';
-    g.fillText(s.side === 'L' ? 'STISKALNICA' : 'PREŠA', 0, 0);
+    g.fillText(CFG.imena.sling, 0, 0);
     g.restore();
     if (e) {
       e.lineCap = 'round';

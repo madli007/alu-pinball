@@ -12,6 +12,7 @@ import { Audio } from './audio.js';
 import { UI } from './ui.js';
 import { setupInput } from './input.js';
 import * as Store from './storage.js';
+import { loadLogos } from './logos.js';
 
 const $ = id => document.getElementById(id);
 const settings = Store.loadSettings();
@@ -173,6 +174,8 @@ if (settings.fps) $('fps').classList.add('on');
 ui.showStart();
 // pisave: ko so naložene, ponovno nariši statične sloje (napisi na mizi)
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { renderer.rebuild(); });
+// logotipi (assets/logos): ko se naložijo, ponovno nariši mizo; brez njih ostane tekst
+loadLogos(() => renderer.rebuild());
 
 let last = performance.now(), fpsAcc = 0, fpsN = 0;
 function frame(now) {

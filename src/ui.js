@@ -6,6 +6,7 @@ import { CFG, MODES, PAL, QUALITY, QUALITY_ORDER } from './config.js';
 import { fmt } from './rules.js';
 import * as Store from './storage.js';
 import { DW, textWidth } from './render/dmd.js';
+import { logoUrl } from './logos.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -73,10 +74,13 @@ export class UI {
 
   /* ---------------- zasloni ---------------- */
   showStart() {
+    const logo = CFG.logotipi ? `<img class="brand-logo" src="${logoUrl('impol')}" alt="Impol" onerror="this.remove()">` : '';
     this.open(`
+      ${logo}
       <h1 class="title">${esc(CFG.naslov)}</h1>
       <div class="title-ver">${esc(CFG.verzija)}</div>
       <div class="subtitle">${esc(CFG.podnaslov)}</div>
+      <div class="companies">${esc(CFG.imena.podjetja)}</div>
       <div class="btns">
         <button class="btn primary" id="uStart">ZAČNI IGRO</button>
         <div class="btn-row">
@@ -86,7 +90,7 @@ export class UI {
       </div>
       ${this.topHtml()}
       ${this.controlsHtml()}
-      <div class="hint">ENTER za začetek · misije, multiball in finale te čakajo v talilnici</div>
+      <div class="hint">ENTER za začetek · misije, multiball in finale te čakajo v livarni ${esc(CFG.imena.scoop)}</div>
       <div class="legal">${esc(CFG.opomba)}</div>`, 'start');
     this.on('uStart', () => this.app.startGame());
     this.on('uScores', () => this.showScores('start'));
@@ -191,6 +195,7 @@ export class UI {
     const rank = (() => { const s = Store.loadScores(); let r = 1; for (const e of s) if (e.score >= d.score) r++; return r; })();
     this.open(`
       <div class="h2 gold-t">NOV REKORD!</div>
+      <div class="rank">NASLOVNICA METALURGA!</div>
       <div class="rank">${rank}. MESTO NA LESTVICI</div>
       <div class="big">${fmt(d.score)}</div>
       <div class="initials" id="uIni"></div>
@@ -336,10 +341,10 @@ export class UI {
     } else if (s.wizard) {
       now.innerHTML = `<div class="name gold-t">FINALE!</div><div class="desc">Vse je vredno jackpot.</div>`;
     } else if (playing) {
-      now.innerHTML = s.modeLit ? `<div class="desc">Misija <b style="color:${MODES[s.next].barva}">${MODES[s.next].ime}</b> čaka v talilnici.</div>`
-        : s.wizardLit ? `<div class="desc gold-t">Finale prižgan — zadeni talilnico!</div>`
+      now.innerHTML = s.modeLit ? `<div class="desc">Misija <b style="color:${MODES[s.next].barva}">${MODES[s.next].ime}</b> čaka v livarni ${esc(CFG.imena.scoop)}.</div>`
+        : s.wizardLit ? `<div class="desc gold-t">Finale prižgan — zadeni ${esc(CFG.imena.scoop)}!</div>`
         : `<div class="desc">Še ${s.rampsToMode}× rampa do naslednje misije.</div>`;
-    } else now.innerHTML = `<div class="desc">Začni igro in zadeni talilnico.</div>`;
+    } else now.innerHTML = `<div class="desc">Začni igro in zadeni ${esc(CFG.imena.scoop)}.</div>`;
     const st = (label, on, txt, cls) => `<span>${label}</span><span class="${on ? (cls || 'on') : 'off'}">${txt}</span>`;
     $('pState').innerHTML = [
       st('Lock', s.locks > 0 || s.lockLit, s.lockLit ? 'PRIŽGAN' : s.locks + ' / 2'),

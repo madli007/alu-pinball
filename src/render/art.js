@@ -8,6 +8,9 @@
    ===================================================================== */
 import { W, H, TAU, PAL, CFG, MODES } from '../config.js';
 import { RAMP, SCOOP, SPINNER } from '../table.js';
+import { drawLogo, tinted } from '../logos.js';
+
+const N = CFG.imena;
 
 export function makeCanvas(w, h) {
   const c = (typeof OffscreenCanvas !== 'undefined' && false) ? new OffscreenCanvas(w, h) : document.createElement('canvas');
@@ -120,9 +123,12 @@ export function drawFloor(g, T) {
   hazard(g, 512, 860, 32, 120);
 
   // napisi
-  text(g, 'IZTISKOVALNA STISKALNICA', RAMP.upR + 12, 440, { rot: -Math.PI / 2, size: 9, color: 'rgba(111,211,255,.55)', font: FONT_T, spacing: 1 });
-  text(g, 'VALJARNA', 44, 520, { rot: -Math.PI / 2, size: 11, color: 'rgba(111,211,255,.6)', font: FONT_T, spacing: 2 });
-  text(g, 'TALILNICA', SCOOP.x, SCOOP.y - 52, { size: 11, color: 'rgba(255,150,60,.85)', font: FONT_T, spacing: 2 });
+  text(g, N.ramp + ' · ' + N.rampKaj, RAMP.upR + 12, 440, { rot: -Math.PI / 2, size: 9, color: 'rgba(111,211,255,.55)', font: FONT_T, spacing: 1 });
+  text(g, N.orbit + ' · ' + N.orbitKaj, 44, 520, { rot: -Math.PI / 2, size: 9, color: 'rgba(111,211,255,.65)', font: FONT_T, spacing: 1 });
+  text(g, N.scoop, SCOOP.x, SCOOP.y - 58, { size: 11, color: 'rgba(255,150,60,.9)', font: FONT_T, spacing: 1.5 });
+  text(g, N.scoopKaj, SCOOP.x, SCOOP.y - 71, { size: 7, color: 'rgba(255,150,60,.65)', font: FONT_T, spacing: 2 });
+  // proizvodne lokacije pod pop bumperji
+  T.bumpers.forEach((c, i) => text(g, N.bumperji[i] || '', c.x, c.y + 35, { size: 6, color: 'rgba(255,190,120,.6)', font: FONT_T, spacing: 1 }));
   text(g, 'KONTROLA KAKOVOSTI', 517, 628, { rot: -Math.PI / 2, size: 8, color: 'rgba(57,255,136,.55)', font: FONT_T, spacing: 1 });
   text(g, 'CODE REVIEW', 282, 412, { size: 9, color: 'rgba(255,79,216,.65)', font: FONT_T, spacing: 1.5 });
   text(g, 'MISIJE', 295, 520, { size: 9, color: 'rgba(255,210,63,.75)', font: FONT_T, spacing: 3 });
@@ -130,7 +136,7 @@ export function drawFloor(g, T) {
   const mpos = T.lamps.filter(l => l.group === 'mode' && l.id !== 'wizard');
   mpos.forEach((l, i) => text(g, MODES[i].ime, l.x, l.y + 22, { size: 7, color: hexA(MODES[i].barva, 0.85), font: FONT_T }));
   text(g, 'BONUS', 282, 650, { size: 8, color: 'rgba(111,211,255,.55)', font: FONT_T, spacing: 3 });
-  text(g, 'KICKBACK', 37, 960, { rot: -Math.PI / 2, size: 7, color: 'rgba(57,255,136,.6)', font: FONT_T });
+  text(g, N.sling, 37, 955, { rot: -Math.PI / 2, size: 7, color: 'rgba(57,255,136,.6)', font: FONT_T });
   text(g, 'IZSTRELITEV', 562, 760, { rot: -Math.PI / 2, size: 9, color: 'rgba(255,150,60,.45)', font: FONT_T, spacing: 2 });
   text(g, 'A · L · U', 290, 186, { size: 8, color: 'rgba(111,211,255,.5)', font: FONT_T, spacing: 2 });
   // element Al
@@ -142,8 +148,11 @@ export function drawFloor(g, T) {
   text(g, '13', 400, 356, { size: 8, color: 'rgba(111,211,255,.7)', font: FONT_M, align: 'left' });
   text(g, '26,98', 420, 397, { size: 7, color: 'rgba(111,211,255,.7)', font: FONT_M });
   g.restore();
-  text(g, CFG.firmaA, 420, 432, { size: 13, weight: 900, color: 'rgba(255,122,26,.45)', font: FONT_T, spacing: 2 });
-  text(g, '× ' + CFG.firmaB + ' ×', 420, 448, { size: 9, color: 'rgba(57,255,136,.45)', font: FONT_T, spacing: 1 });
+  const logoOk = drawLogo(g, 'impol', 420, 428, 92, 'rgba(225,235,248,.62)');
+  if (!logoOk) text(g, CFG.firmaA, 420, 432, { size: 13, weight: 900, color: 'rgba(255,122,26,.45)', font: FONT_T, spacing: 2 });
+  // velik potisk logotipa nad flipperji (kot lak na mizi)
+  drawLogo(g, 'impol', 283, 760, 176, 'rgba(160,200,255,.16)');
+  text(g, '× ' + CFG.firmaB + ' ×', 420, logoOk ? 457 : 448, { size: 9, color: 'rgba(57,255,136,.45)', font: FONT_T, spacing: 1 });
 
   // ležišča insertov (vdolbine)
   for (const l of T.lamps) {
@@ -447,8 +456,22 @@ function apron(g) {
   g.fillStyle = metal(0, 985, 0, 1000); g.fillRect(200, 986, 165, 16);
   text(g, CFG.naslov, 128, 916, { size: 13, weight: 900, color: 'rgba(255,170,90,.9)', font: FONT_T, spacing: 1 });
   text(g, CFG.verzija, 128, 934, { size: 10, weight: 700, color: 'rgba(111,211,255,.85)', font: FONT_T, spacing: 4 });
-  text(g, CFG.firmaA + ' × ' + CFG.firmaB, 437, 916, { size: 11, weight: 800, color: 'rgba(111,211,255,.85)', font: FONT_T, spacing: 1 });
-  text(g, 'neuradna igra za hec', 437, 934, { size: 9, color: 'rgba(200,210,225,.6)', font: FONT_U });
+  if (tinted('impol')) {
+    // napisna tablica: logotip v originalnih barvah na beli plošči
+    const pw = 84, ph = 32, px = 437 - pw / 2, py = 892;
+    g.save();
+    g.beginPath(); g.roundRect ? g.roundRect(px, py, pw, ph, 5) : g.rect(px, py, pw, ph);
+    const pg = g.createLinearGradient(0, py, 0, py + ph);
+    pg.addColorStop(0, '#ffffff'); pg.addColorStop(1, '#dfe6ee');
+    g.fillStyle = pg; g.fill();
+    g.strokeStyle = 'rgba(120,140,165,.9)'; g.lineWidth = 1; g.stroke();
+    g.restore();
+    drawLogo(g, 'impol', 437, py + ph / 2 + 0.5, pw - 12);
+    text(g, '× ' + CFG.firmaB, 437, 937, { size: 10, weight: 800, color: 'rgba(57,255,136,.85)', font: FONT_T, spacing: 2 });
+  } else {
+    text(g, CFG.firmaA + ' × ' + CFG.firmaB, 437, 916, { size: 11, weight: 800, color: 'rgba(111,211,255,.85)', font: FONT_T, spacing: 1 });
+  }
+  text(g, 'igra za hec', 437, 952, { size: 9, color: 'rgba(200,210,225,.6)', font: FONT_U });
   // vijaki
   for (const [x, y] of [[70, 990], [190, 990], [375, 990], [495, 990]]) {
     g.beginPath(); g.arc(x, y, 2.5, 0, TAU); g.fillStyle = '#7d8a9c'; g.fill();

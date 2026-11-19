@@ -4,6 +4,17 @@
    ===================================================================== */
 import { CFG, PAL, MODES } from '../config.js';
 import { fmt } from '../rules.js';
+import { logoBitmap } from '../logos.js';
+
+// zanimivosti za attract način
+const FACTS = [
+  ['IMPOL', 'OD 1825'],
+  ['ALUMINIJ', 'OD 1950'],
+  ['INDUSTRIJA METALNIH', 'POLIZDELKOV'],
+  ['ALCAD OD 1995', 'ALCLOUD'],
+  ['IZVOZ NA', '50 TRGOV'],
+  ['BISTRICA SEVOJNO', 'ŠIBENIK NEW YORK'],
+];
 
 export const DW = 128, DH = 32;
 
@@ -349,14 +360,14 @@ export class DMD {
       return;
     }
     const k = Math.min(1, b.t / 1.8);
-    this.text('BONUS', DW / 2, 0, { color: hex(PAL.cyan), align: 'center' });
+    this.text(CFG.imena.kadri + ': IZPLAČILO', DW / 2, 0, { color: hex(PAL.cyan), align: 'center' });
     this.text(fmt(b.base * k) + ' × ' + b.mult, DW / 2, 10, { color: [1, 1, 1], align: 'center' });
     if (b.t > 1.9) this.text(fmt(b.bonus), DW / 2, 19, { scale: textWidth(fmt(b.bonus), 2) < DW ? 2 : 1, color: C, align: 'center' });
   }
 
   drawAttract(dt, game) {
     this.attractT += dt;
-    const pages = 7, per = 3.2;
+    const pages = 9, per = 3.2;
     const p = Math.floor(this.attractT / per) % pages, t = this.attractT % per;
     const C = hex(PAL.melt), cy = hex(PAL.cyan), gr = hex(PAL.code), gold = hex(PAL.gold);
     switch (p) {
@@ -412,7 +423,26 @@ export class DMD {
         break;
       }
       case 5: {
-        this.drawMsg({ anim: 'roll', t: t, dur: per, text: 'VALJARNA', col: cy, sub: '' }, game);
+        this.drawMsg({ anim: 'roll', t: t, dur: per, text: CFG.imena.orbit, col: cy, sub: '' }, game);
+        break;
+      }
+      case 6: {
+        // logotip Impol (če je naložen) z lesketom
+        const bw = 96, bh = 30, bmp = logoBitmap('impol', bw, bh);
+        if (!bmp) { this.text(CFG.firmaA, DW / 2, 9, { scale: 2, color: cy, align: 'center' }); break; }
+        const x0 = (DW - bw) >> 1, y0 = 1, sweep = (t * 60) % 170 - 30, blue = [0.3, 0.62, 1];
+        for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+          const v = bmp[y * bw + x];
+          if (v < 0.35) continue;
+          const shine = Math.abs(x - sweep + y * 0.6) < 3;
+          this.px(x0 + x, y0 + y, shine ? [1, 1, 1] : blue, Math.min(1, v * 1.2));
+        }
+        break;
+      }
+      case 7: {
+        const f = FACTS[Math.floor(this.attractT / (per * pages)) % FACTS.length];
+        this.fit(f[0], 4, { color: cy, align: 'center' });
+        this.fit(f[1], 17, { color: C, align: 'center' });
         break;
       }
       default: {

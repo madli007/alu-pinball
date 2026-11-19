@@ -2,10 +2,13 @@
 
 Moderen pinball za hec v brskalniku: lastna 2D fizika, WebGL izris z bloomom, brušenim aluminijem
 in animirano talino, barvni DMD zaslon, svetlobni šovi, proceduralna glasba in efekti.
-Čisti HTML + JavaScript (ES moduli), **brez build koraka, brez knjižnic in brez slikovnih/zvočnih datotek**
-— vse (teksture, zvok, glasba) je generirano v kodi.
+Čisti HTML + JavaScript (ES moduli), **brez build koraka in brez knjižnic**. Teksture, zvok in glasba so generirani v kodi;
+edina slikovna datoteka je logotip v `assets/logos/impol.png`.
 
-> Neuradna igra za hec. Ni uradni izdelek nobene od omenjenih firm; imeni sta samo tekst (nastavljivo v `src/config.js`).
+Na mizi so prava podjetja skupine Impol in Alcad (Impol LLT, PCP, FT, Stampal SB, Rondal, R in R, Servis, Kadring,
+Seval, TLM, Alcloud). Raziskava in ozadje: [PREDLOGI-FIRME.md](PREDLOGI-FIRME.md).
+
+> Igra za hec. Imena in logotipi so uporabljeni z dovoljenjem (nastavljivo v `src/config.js`).
 
 ## Zagon lokalno
 
@@ -43,32 +46,43 @@ Igra se samodejno ustavi, ko zavihek ali okno izgubi fokus. Pred izstrelitvijo f
 
 ## Pravila
 
-**Strele:** levi orbit (spinner »Valjarna«), rampa »Iztiskovalna stiskalnica« (dvignjena pot, vrne žogico na levi inlane),
-talilnica (scoop, desno), B·U·G drop tarče (Alcad kontrola kakovosti), Code review tarča (sredina), A·L·U kanali zgoraj, 3 pop bumperji »Al 13«.
+**Strele:** levi orbit s spinnerjem (**Impol FT · valjarna**), rampa (**Impol PCP · stiskalnica**, dvignjena pot, vrne žogico na levi inlane),
+livarna (**Impol LLT**, scoop desno), B·U·G drop tarče (Alcad kontrola kakovosti), Code review tarča (Alcad, mystery **Alcloud**),
+A·L·U kanali zgoraj, 3 pop bumperji »Al 13« (**Slovenska Bistrica · Sevojno · Šibenik**), slingshota in kickback (**Stampal SB**).
+
+| Dogodek | Podjetje |
+|---|---|
+| začetek igre | **Kadring: zaposlen!** |
+| bonus ob koncu žogice | **Kadring: izplačilo** |
+| ball save | **Impol R in R** |
+| ball search (zataknjena žogica) | **Impol Servis** |
+| extra ball, add-a-ball | **Rondela** (Rondal) |
+| locka | **Sevojno**, **Šibenik** |
+| jackpot / super jackpot | **FT jackpot**, **PCP jackpot** / **New York** (Impol Aluminum Corp.) |
 
 - **A·L·U kanali** → bonus množitelj ×2 … ×6. Flipperja premikata prižgane luči (lane change).
-- **Skill shot**: zadeni utripajoči kanal neposredno iz izstrelitve → 100.000.
-- **B·U·G tarče** → prižgejo **LOCK** v talilnici (po prvem multiballu sta potrebna dva kompleta).
+- **Skill shot**: zadeni utripajoči kanal neposredno iz izstrelitve → 182.500 (»od 1825«).
+- **B·U·G tarče** → prižgejo **LOCK** v livarni (po prvem multiballu sta potrebna dva kompleta).
 - **2 locka → MULTIBALL** (3 žogice; zaklenjena žogica je vidna v peči). Orbit in rampa sta **JACKPOT**; ko zadeneš oba,
-  se v talilnici prižge **SUPER JACKPOT** (2,5 × jackpot). B·U·G med multiballom = **ADD-A-BALL** (enkrat).
+  se v livarni prižge **SUPER JACKPOT** (2,5 × jackpot). B·U·G med multiballom = **ADD-A-BALL** (enkrat).
 - **Combo**: zaporedni veliki streli (orbit, rampa, code review) v 4 s; prikaz na DMD. Zaporedne rampe dajo še rampni combo.
 - **Code review**: 3 zadetki → **mystery award** (točke, lock, extra ball, ball save, množitelj, prižgana misija, kickback).
-- **Extra ball** se prižge po 8 orbitih (pobereš ga v talilnici).
+- **Extra ball** (»Rondela«) se prižge po 8 orbitih (pobereš ga v livarni).
 - **Kickback** v levem outlanu; spinner ga ponovno prižge (vsakih 25 obratov). **Ball save** 10 s po izstrelitvi.
 - **Bonus** ob koncu žogice: zbran bonus × množitelj (TILT ga izniči).
 
-### Misije (začnejo se v talilnici, ko je misija prižgana)
+### Misije (začnejo se v livarni, ko je misija prižgana)
 
 Prva misija je prižgana na začetku, naslednje prižgejo zadetki rampe (3–5). Med misijo luči kažejo, kaj streljati.
 
 | Misija | Cilj | Čas |
 |---|---|---|
-| **Talina** (Impol) | zadeni bumperje 12× — peč se vidno segreva | 40 s |
-| **Valjarna** (Impol) | navij 50 m pločevine: spinner 1 m, orbit 12 m | 45 s |
-| **Hotfix v produkcijo** (Alcad) | hurry-up: vrednost pada od 2.000.000, zadeni rampo, preden pade na nič | 30 s |
-| **Sprint** (Alcad) | zadeni vseh 5 označenih strelov (orbit, rampa, talilnica, B·U·G, review) | 60 s |
+| **LLT: Livarna** (Impol LLT) | zadeni bumperje 12× — peč se vidno segreva | 40 s |
+| **FT: Folija** (Impol FT) | navij 50 m folije: spinner 1 m, orbit 12 m | 45 s |
+| **Alcad hotfix** | hurry-up: vrednost pada od 2.000.000, zadeni rampo, preden pade na nič | 30 s |
+| **Alcad sprint** | zadeni vseh 5 označenih strelov (orbit, rampa, livarna, B·U·G, review) | 60 s |
 
-**Finale »Naročilo izpolnjeno«** (wizard): ko opraviš vse štiri misije, se v talilnici prižge finale — 4-ball multiball,
+**Finale »Naročilo izpolnjeno«** (wizard, »izvoz na 50 trgov«): ko opraviš vse štiri misije, se v livarni prižge finale — 4-ball multiball,
 vse je vredno jackpot, poseben svetlobni šov in glasba. Ko ostane ena žogica, dobiš nagrado in misije se začnejo znova.
 
 ## Grafika in kakovost
@@ -92,6 +106,8 @@ Statistika (igre, najdaljši combo, največji jackpot, misije, finale, čas) —
 ```
 index.html            postavitev (ohišje, DMD, miza, stranski paneli)
 tests.html            testi v brskalniku
+assets/logos/         logotip Impol (impol.png se uporablja; ostale datoteke so izvirniki)
+src/logos.js          nalaganje logotipov, obarvanje, bitna slika za DMD (brez slike → tekst)
 src/config.js         CFG (imena, žogice, ravnotežje), fizikalne konstante, paleta, misije, stopnje kakovosti
 src/table.js          geometrija mize, senzorji, luči (inserti)
 src/physics.js        fizika: kapsule, krogi, flipperji (ω×r), trenje, plasti (rampa), enosmerna vrata
@@ -115,6 +131,8 @@ tests/tests.js        streli s flipperjev, rampa, stresni test (brez tuneliranja
 V `src/config.js`:
 
 - `CFG.naslov`, `CFG.podnaslov`, `CFG.firmaA`, `CFG.firmaB`, `CFG.opomba` — besedila;
+- `CFG.imena` — imena podjetij na strelih in v sporočilih; `CFG.logotipi = false` izklopi logotipe (povsod ostane tekst);
+- `CFG.skillShot` — vrednost skill shota;
 - `CFG.steviloZogic`, `CFG.ballSaveSek`, `CFG.multiballSaveSek`, `CFG.wizardSaveSek` — prizanesljivost;
 - `CFG.comboOkno`, `CFG.rampZaMisijo`, `CFG.orbitZaExtraBall`, `CFG.reviewZaMystery`, `CFG.spinZaKickback` — ravnotežje;
 - `MODES` — cilji, časi in nagrade misij; `QUALITY` — parametri stopenj kakovosti.

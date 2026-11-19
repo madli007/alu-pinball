@@ -3,6 +3,8 @@
    Brez DOM-a: teče enako v igri in v testih (tests.html).
    ===================================================================== */
 import { CFG, MODES, PAL, BR, STEP, H } from './config.js';
+
+const N = CFG.imena;
 import { PLUNGER_Y, SCOOP, insideTable } from './table.js';
 import { createPhysics } from './physics.js';
 
@@ -110,7 +112,11 @@ export class Game {
     this.startT = this.time;
     this.serveBall();
     this.emit('gameStart', {});
-    this.say('ŽOGA 1', this.launchHint || 'drži PRESLEDEK, nato spusti', PAL.cyan, { dur: 3 });
+    this.say(N.kadri + ': ZAPOSLEN!', 'dobrodošel v skupini Impol', PAL.code, { dur: 1.6 });
+    this.after(1.6, () => {
+      if (this.state === 'play' && this.ballNum === 1 && this.balls.length === 1 && this.inPlunger(this.balls[0]))
+        this.say('ŽOGA 1', this.launchHint || 'drži PRESLEDEK, nato spusti', PAL.cyan, { dur: 3 });
+    });
   }
 
   drain(b) {
@@ -123,7 +129,7 @@ export class Game {
     if (this.time < this.ballSaveUntil && !this.tilted) {
       if (this.multi) this.spawnLater(0.8, () => this.autoLaunch());
       else {
-        this.say('ŠE ENKRAT!', 'ball save', PAL.cyan, { dur: 1.8 });
+        this.say(N.ballSave, 'ball save — še enkrat!', PAL.cyan, { dur: 1.8 });
         this.emit('ballSave', {});
         this.spawnLater(1, () => this.serveBall());
         this.ballSaveUntil = 0;
@@ -269,7 +275,7 @@ export class Game {
       else if (this.mb) {
         if (!this.mb.addUsed) {
           this.mb.addUsed = true;
-          this.say('ADD-A-BALL', 'še ena žogica v igri', PAL.code, { anim: 'terminal', lines: ['$ deploy --replicas +1'] });
+          this.say('NOVA ' + N.extraBall, 'add-a-ball', PAL.code, { anim: 'terminal', lines: ['$ alcloud deploy --replicas +1', '> Rondal: nova rondela'] });
           this.emit('addABall', {});
           this.spawnLater(0.8, () => this.autoLaunch());
           this.ballSaveUntil = Math.max(this.ballSaveUntil, this.time + 6);
@@ -283,7 +289,7 @@ export class Game {
         if (this.bugSets >= need) {
           this.bugSets = 0;
           this.lockLit = true;
-          this.say('BUG ODPRAVLJEN!', 'LOCK v talilnici', PAL.code, { anim: 'terminal', lines: ['$ npm test', '✓ 3/3 bugi odpravljeni', '> LOCK PRIŽGAN'] });
+          this.say('BUG ODPRAVLJEN!', 'LOCK v livarni', PAL.code, { anim: 'terminal', lines: ['$ npm test', '✓ 3/3 bugi odpravljeni', '> LOCK PRIŽGAN'] });
           this.emit('lockLit', {});
         } else {
           this.say('BUGI: 1 / 2', 'še en komplet za LOCK', PAL.code, { anim: 'terminal', lines: ['$ npm test', '✗ 1 test še pada'] });
@@ -314,26 +320,26 @@ export class Game {
     const g = this;
     const opts = [
       { w: 30, ok: true, name: 'TOČKE', run() { const p = 100000 * (1 + Math.floor(Math.random() * 3)); g.addScore(p, 282, 400); return '+' + fmt(p); } },
-      { w: 15, ok: !g.lockLit && !g.mb && !g.wiz, name: 'LOCK PRIŽGAN', run() { g.lockLit = true; return 'talilnica čaka'; } },
-      { w: 3, ok: !g.mysteryEB, name: 'EXTRA BALL', run() { g.mysteryEB = true; g.extraBalls++; g.emit('extraBall', {}); return 'še ena žogica'; } },
-      { w: 15, ok: true, name: 'BALL SAVE', run() { g.ballSaveUntil = Math.max(g.ballSaveUntil, g.time + 15); return '15 sekund'; } },
+      { w: 15, ok: !g.lockLit && !g.mb && !g.wiz, name: 'LOCK PRIŽGAN', run() { g.lockLit = true; return N.scoop + ' čaka'; } },
+      { w: 3, ok: !g.mysteryEB, name: N.extraBall + '!', run() { g.mysteryEB = true; g.extraBalls++; g.emit('extraBall', {}); return 'extra ball'; } },
+      { w: 15, ok: true, name: N.ballSave, run() { g.ballSaveUntil = Math.max(g.ballSaveUntil, g.time + 15); return 'ball save 15 s'; } },
       { w: 12, ok: g.mult < 6, name: 'BONUS +1×', run() { g.mult++; return 'bonus ×' + g.mult; } },
       { w: 12, ok: !g.modeLit && !g.mode && !g.wizardLit && !g.wiz, name: 'MISIJA PRIŽGANA', run() { g.lightMode(true); return MODES[g.nextModeIndex()].ime; } },
-      { w: 10, ok: !g.kickback, name: 'KICKBACK', run() { g.kickback = true; return 'levi outlane varen'; } },
+      { w: 10, ok: !g.kickback, name: N.sling, run() { g.kickback = true; return 'kickback: levi outlane varen'; } },
     ].filter(o => o.ok);
     let r = Math.random() * opts.reduce((a, o) => a + o.w, 0);
     let pick = opts[0];
     for (const o of opts) { r -= o.w; if (r <= 0) { pick = o; break; } }
     const sub = pick.run();
     this.emit('mystery', { name: pick.name });
-    this.say(pick.name, sub, PAL.magenta, { anim: 'terminal', lines: ['$ git review --mystery', '> reviewer: approved ✓'], dur: 3 });
+    this.say(pick.name, sub, PAL.magenta, { anim: 'terminal', lines: ['$ ' + N.mystery.toLowerCase() + ' review --mystery', '> ' + N.mystery + ': approved ✓'], dur: 3 });
   }
 
   onLane(idx) {
     const x = 240 + 50 * idx;
     if (this.skillArmed && idx === this.skillLane && (this.skillUntil === 0 || this.time < this.skillUntil + 6)) {
-      this.addScore(100000, x, 150, 5000);
-      this.say('SKILL SHOT!', '+100.000', PAL.white, { anim: 'zoom' });
+      this.addScore(CFG.skillShot, x, 150, 5000);
+      this.say('SKILL SHOT!', 'OD 1825 · +' + fmt(CFG.skillShot), PAL.white, { anim: 'zoom' });
       this.emit('skill', { x, y: 115 });
     }
     this.skillArmed = false;
@@ -365,10 +371,10 @@ export class Game {
     this.addScore(15000, 90, 300, 3000);
     if (this.orbits >= CFG.orbitZaExtraBall && !this.extraGiven && !this.extraLit) {
       this.extraLit = true;
-      this.say('EXTRA BALL PRIŽGAN', 'zadeni talilnico', PAL.magenta);
+      this.say(N.extraBall + ' PRIŽGANA', 'extra ball → ' + N.scoop, PAL.magenta);
       this.emit('extraBallLit', {});
     } else if (this.combo < 2 && !this.mode) {
-      this.say('IZTISKOVANJE', '+15.000', PAL.cyan, { dur: 1.1, small: true });
+      this.say(N.orbit, '+15.000', PAL.cyan, { dur: 1.1, small: true });
     }
   }
 
@@ -387,7 +393,7 @@ export class Game {
     if (!this.modeLit && !this.mode && !this.wizardLit) {
       this.rampsToMode--;
       if (this.rampsToMode <= 0) this.lightMode();
-      else this.say('STISKALNICA', 'še ' + this.rampsToMode + '× do misije', PAL.cyan, { dur: 1.2, small: true });
+      else this.say(N.ramp, 'še ' + this.rampsToMode + '× do misije', PAL.cyan, { dur: 1.2, small: true });
     } else if (this.rampCombo >= 2 && !this.mode) {
       this.say('RAMPA ×' + this.rampCombo, '+' + fmt(rp), PAL.cyan, { dur: 1.2 });
     }
@@ -407,7 +413,7 @@ export class Game {
 
     if (this.extraLit) {
       this.extraLit = false; this.extraGiven = true; this.extraBalls++;
-      this.say('EXTRA BALL!', 'še ena žogica', PAL.magenta, { anim: 'zoom' });
+      this.say(N.extraBall + '!', 'Rondal ti je izsekal novo žogico', PAL.magenta, { anim: 'zoom' });
       this.emit('extraBall', {});
     }
 
@@ -425,13 +431,13 @@ export class Game {
         this.maxJackpot = Math.max(this.maxJackpot, v);
         this.mb.superLit = false; this.mb.jpOrbit = true; this.mb.jpRamp = true;
         this.jackpotValue += 100000;
-        this.say('SUPER JACKPOT', fmt(v), PAL.gold, { anim: 'jackpot', dur: 3 });
+        this.say('SUPER JACKPOT', N.superJackpot + ' · ' + fmt(v), PAL.gold, { anim: 'jackpot', dur: 3 });
         this.emit('superJackpot', { value: v, x: SCOOP.x, y: SCOOP.y });
         this.after(2.2, () => this.ejectFromScoop(b));
       } else {
         const v = 50000;
         this.addScore(v, SCOOP.x, SCOOP.y - 40, 5000);
-        this.say('TALILNICA', fmt(v), PAL.gold, { dur: 1.4 });
+        this.say(N.scoop, fmt(v), PAL.gold, { dur: 1.4 });
         this.after(0.9, () => this.ejectFromScoop(b));
       }
       return;
@@ -445,7 +451,7 @@ export class Game {
       this.emit('lock', { n: this.locks });
       if (this.locks < 2) {
         this.balls.splice(this.balls.indexOf(b), 1);   // žoga ostane v talilnici (vidno)
-        this.say('ŽOGA ZAKLENJENA', 'še 1 lock za MULTIBALL', PAL.code, { anim: 'zoom' });
+        this.say(N.lock[0] + ' ZAKLENJENO', 'še ' + N.lock[1] + ' za MULTIBALL', PAL.code, { anim: 'zoom' });
         this.spawnLater(1.6, () => this.serveBall());
       } else {
         this.locks = 0;
@@ -455,7 +461,7 @@ export class Game {
     }
 
     this.addScore(25000, SCOOP.x, SCOOP.y - 40, 3000);
-    this.say('TALILNICA', '+25.000', PAL.melt, { dur: 1.1, small: true });
+    this.say(N.scoop, '+25.000', PAL.melt, { dur: 1.1, small: true });
     this.after(1.0, () => this.ejectFromScoop(b));
   }
 
@@ -465,7 +471,7 @@ export class Game {
     this.jackpotValue = 500000 + 250000 * (this.mbCount - 1);
     this.mb = { jpOrbit: true, jpRamp: true, superLit: false, addUsed: false, jackpots: 0 };
     this.ballSaveUntil = this.time + CFG.multiballSaveSek;
-    this.say('MULTIBALL!', 'orbit in rampa = JACKPOT', PAL.gold, { anim: 'multiball', dur: 3.2 });
+    this.say('MULTIBALL!', 'skupina Impol: FT in PCP = JACKPOT', PAL.gold, { anim: 'multiball', dur: 3.2 });
     this.emit('multiball', {});
     this.after(1.6, () => this.ejectFromScoop(scoopBall));
     this.spawnLater(2.3, () => this.autoLaunch());
@@ -479,11 +485,11 @@ export class Game {
     this.mb['jp' + shot] = false;
     this.mb.jackpots++;
     this.jackpotValue += 100000;
-    this.say('JACKPOT!', fmt(v), PAL.gold, { anim: 'jackpot', dur: 2.4 });
+    this.say((shot === 'Orbit' ? 'FT' : 'PCP') + ' JACKPOT', fmt(v), PAL.gold, { anim: 'jackpot', dur: 2.4 });
     this.emit('jackpot', { value: v, x, y });
     if (!this.mb.jpOrbit && !this.mb.jpRamp) {
       this.mb.superLit = true;
-      this.after(2.4, () => { if (this.mb && this.mb.superLit) this.say('SUPER JACKPOT', 'prižgan v talilnici', PAL.gold); });
+      this.after(2.4, () => { if (this.mb && this.mb.superLit) this.say('SUPER JACKPOT', N.superJackpot + ' → ' + N.scoop, PAL.gold); });
     }
   }
 
@@ -506,7 +512,7 @@ export class Game {
     if (this.modeLit || this.mode || this.wiz || this.wizardLit) return;
     this.modeLit = true;
     this.rampsToMode = CFG.rampZaMisijo + Math.min(2, this.modesCompleted);
-    if (!quiet) this.say('MISIJA PRIŽGANA', MODES[this.nextModeIndex()].ime + ' → talilnica', PAL.melt);
+    if (!quiet) this.say('MISIJA PRIŽGANA', MODES[this.nextModeIndex()].ime + ' → ' + N.scoop, PAL.melt);
     this.emit('modeLit', {});
   }
 
@@ -519,8 +525,8 @@ export class Game {
     this.emit('modeStart', { i, def });
     const anim = def.id === 'valjarna' ? 'roll' : def.id === 'talina' ? 'melt' : 'terminal';
     const lines = def.id === 'hotfix'
-      ? ['$ ssh produkcija', '! 500 Internal Error', '$ git checkout -b hotfix']
-      : def.id === 'sprint' ? ['$ jira sprint start', '> 5 nalog v backlogu', '> GO GO GO'] : [];
+      ? ['$ ssh mainframe', '! z/VSE: 500 Error', '$ git checkout -b hotfix']
+      : def.id === 'sprint' ? ['$ alcad sprint start', '> FT PCP LLT', '> STAMPAL ALCAD · GO!'] : [];
     this.say(def.polno || def.ime, def.opis, def.barva, { anim, lines, dur: 4.5, mode: i });
     this.after(2.6, () => {
       if (this.mode && this.mode.def === def) this.mode.running = true;
@@ -578,7 +584,7 @@ export class Game {
     this.emit('modeComplete', { i: m.i, def: m.def, award });
     if (this.modesDone.every(Boolean)) {
       this.wizardLit = true;
-      this.after(3, () => this.say('NAROČILO PRIPRAVLJENO', 'talilnica → FINALE', PAL.gold, { anim: 'zoom', dur: 3 }));
+      this.after(3, () => this.say('NAROČILO PRIPRAVLJENO', N.scoop + ' → FINALE', PAL.gold, { anim: 'zoom', dur: 3 }));
       this.emit('wizardLit', {});
     }
   }
@@ -597,7 +603,7 @@ export class Game {
     this.wiz = { value: 1000000, hits: 0, total: 0 };
     this.wizards++;
     this.ballSaveUntil = this.time + CFG.wizardSaveSek;
-    this.say('NAROČILO IZPOLNJENO', 'FINALE — vse je JACKPOT', PAL.gold, { anim: 'wizard', dur: 4 });
+    this.say('NAROČILO IZPOLNJENO', 'izvoz na 50 trgov — vse je JACKPOT', PAL.gold, { anim: 'wizard', dur: 4 });
     this.emit('wizardStart', {});
     this.after(3.2, () => this.ejectFromScoop(b));
     this.spawnLater(3.8, () => this.autoLaunch());
@@ -623,7 +629,7 @@ export class Game {
     if (award) {
       const bonus = 2000000 + w.total / 2;
       this.addScore(bonus, 282, 540);
-      this.say('NAROČILO DOSTAVLJENO', fmt(bonus), PAL.gold, { anim: 'jackpot', dur: 3.5 });
+      this.say('IZVOZNIK LETA', fmt(bonus), PAL.gold, { anim: 'jackpot', dur: 3.5 });
     }
     this.modesDone = [false, false, false, false];
     this.modeIdx = 0;
@@ -755,7 +761,7 @@ export class Game {
       if (b.x < 55 && b.y > 880 && b.vy > 0 && this.kickback && !this.tilted && this.state === 'play') {
         b.x = 37; b.y = 900; b.vx = 0; b.vy = -2100;
         this.kickback = false;
-        this.say('KICKBACK!', 'spinner ga spet prižge', PAL.code, { dur: 1.4, small: true });
+        this.say(N.sling + '!', 'kickback · spinner ga spet prižge', PAL.code, { dur: 1.4, small: true });
         this.emit('kickback', { x: 37, y: 920 });
       }
       // iskanje zataknjene žogice
@@ -765,6 +771,7 @@ export class Game {
         b.vy = -900; b.vx = (Math.random() - 0.5) * 600;
         b.anchorT = this.time;
         this.emit('ballSearch', { x: b.x, y: b.y });
+        if (this.time - (this.lastSearchMsg || -99) > 8) { this.lastSearchMsg = this.time; this.say(N.servis, 'na poti — sproščam žogico', PAL.cyan, { dur: 1.4, small: true }); }
       }
     }
 
@@ -786,7 +793,7 @@ export class Game {
         this.modeEvent('spin');
         if (this.spins % CFG.spinZaKickback === 0 && !this.kickback && this.state === 'play') {
           this.kickback = true;
-          this.say('KICKBACK AKTIVEN', 'valjarna je napolnila', PAL.code, { dur: 1.4, small: true });
+          this.say(N.sling + ' KICKBACK', N.orbit + ' je napolnil', PAL.code, { dur: 1.4, small: true });
           this.emit('kickbackLit', {});
         }
       }
