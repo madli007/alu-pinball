@@ -302,7 +302,7 @@ export function drawBalls(g, e, balls, env, layer, q, time) {
     chromeBall(g, b.x, b.y, R, env, b);
     if (e) {
       e.beginPath(); e.arc(b.x - R * 0.35, b.y - R * 0.42, R * 0.32, 0, TAU);
-      e.fillStyle = 'rgba(255,255,255,.75)'; e.fill();
+      e.fillStyle = 'rgba(255,255,255,.3)'; e.fill();
     }
   }
 }

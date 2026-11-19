@@ -67,9 +67,10 @@ void main(){
     vec4 b = uBall[i];
     if (b.w < 0.5) continue;
     vec2 d = px - b.xy;
-    float refl = exp(-d.x * d.x / (2.0 * 7.0 * 7.0) - d.y * d.y / (2.0 * 55.0 * 55.0));
-    float glow = exp(-dot(d, d) / (2.0 * 38.0 * 38.0));
-    dyn += vec3(0.85, 0.92, 1.0) * refl * (0.5 + 0.5 * streak) * 0.9;
+    // odsev žogice na kovini in mehak sij okoli nje (zmerno, da ne zaslepi)
+    float refl = exp(-d.x * d.x / (2.0 * 6.0 * 6.0) - d.y * d.y / (2.0 * 38.0 * 38.0));
+    float glow = exp(-dot(d, d) / (2.0 * 32.0 * 32.0));
+    dyn += vec3(0.85, 0.92, 1.0) * refl * (0.5 + 0.5 * streak) * 0.4;
     ballLight += vec3(0.55, 0.65, 0.8) * glow;
   }
   for (int i = 0; i < 8; i++) {
@@ -86,7 +87,7 @@ void main(){
   vec3 floorc = metal * bare + art.rgb;          // art je premultipliciran
   floorc += dyn * (0.25 + 0.75 * bare);
   floorc *= uGI;
-  floorc += ballLight * 0.08;
+  floorc += ballLight * 0.04;
 
   // talina
   if (mask.g > 0.01) {
@@ -100,7 +101,7 @@ void main(){
   vec4 dy = texture2D(uDyn, tp + uParTop);
   col = dy.rgb + col * (1.0 - dy.a);
   // luč žogic na bližnjih elementih
-  col += (rz.a + dy.a) * col * ballLight * 0.55;
+  col += (rz.a + dy.a) * col * ballLight * 0.25;
   col += (rz.a * 0.6 + dy.a * 0.4) * dyn * 0.25;
   // emisija
   col += texture2D(uEmiS, tp + uParTop * 0.6).rgb * uGI * uEmiK;

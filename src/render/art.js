@@ -462,7 +462,8 @@ function apron(g) {
     g.save();
     g.beginPath(); g.roundRect ? g.roundRect(px, py, pw, ph, 5) : g.rect(px, py, pw, ph);
     const pg = g.createLinearGradient(0, py, 0, py + ph);
-    pg.addColorStop(0, '#ffffff'); pg.addColorStop(1, '#dfe6ee');
+    // ne čisto bela: svetlejše od praga za bloom bi tablica žarela kot luč
+    pg.addColorStop(0, '#c4cdd8'); pg.addColorStop(1, '#a3afbd');
     g.fillStyle = pg; g.fill();
     g.strokeStyle = 'rgba(120,140,165,.9)'; g.lineWidth = 1; g.stroke();
     g.restore();
