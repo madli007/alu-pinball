@@ -284,7 +284,7 @@ export function drawBalls(g, e, balls, env, layer, q, time) {
     // motion blur
     const sp = Math.hypot(b.vx, b.vy);
     if (q.motion && sp > 1000) {
-      const n = 4, k = Math.min(1, (sp - 1000) / 1800);
+      const n = 4, k = Math.min(1, (sp - 1000) / 2600);
       for (let i = n; i >= 1; i--) {
         const t = i * 0.006;
         g.beginPath(); g.arc(b.x - b.vx * t, b.y - b.vy * t, R * (1 - i * 0.06), 0, TAU);
@@ -296,7 +296,8 @@ export function drawBalls(g, e, balls, env, layer, q, time) {
         e.beginPath();
         for (let i = 0; i < t.length; i += 2) i ? e.lineTo(t[i], t[i + 1]) : e.moveTo(t[i], t[i + 1]);
         e.lineTo(b.x, b.y);
-        e.strokeStyle = `rgba(150,200,255,${0.35 * k})`; e.lineWidth = R * 1.1; e.stroke();
+        // sled na emisijskem sloju (žari) — šibka in ozka, da ne zaslepi
+        e.strokeStyle = `rgba(150,200,255,${0.1 * k})`; e.lineWidth = R * 0.6; e.stroke();
       }
     }
     chromeBall(g, b.x, b.y, R, env, b);
