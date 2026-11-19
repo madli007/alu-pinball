@@ -2,91 +2,82 @@
 <html lang="sl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Alu Pinball</title>
-<style>
-  :root {
-    --bg: #05070b;
-    --panel: #0d131c;
-    --line: #1f2a38;
-    --amber: #ffab3d;
-    --amber-dim: #6b4413;
-    --cyan: #6fd3ff;
-    --text: #d9e2ec;
-    --muted: #7d8b9c;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0; height: 100%; background: var(--bg); color: var(--text);
-    font-family: "Segoe UI", system-ui, sans-serif;
-    overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;
-  }
-  #hud {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    max-width: 640px; margin: 0 auto; padding: 6px 16px;
-    font-family: "Consolas", "Courier New", monospace;
-  }
-  .hud-box { min-width: 70px; }
-  .hud-box.r { text-align: right; }
-  .lbl { font-size: 11px; letter-spacing: 2px; color: var(--muted); }
-  .val { font-size: 18px; color: var(--amber); text-shadow: 0 0 8px rgba(255,171,61,.6); }
-  #hud-score {
-    font-size: 30px; font-weight: 700; color: var(--amber); text-align: center;
-    text-shadow: 0 0 10px rgba(255,171,61,.8); letter-spacing: 1px; line-height: 1.1;
-  }
-  #hud-info { font-size: 12px; color: var(--cyan); text-align: center; min-height: 16px; letter-spacing: 1px; }
-  #mute {
-    background: none; border: 1px solid var(--line); color: var(--text); border-radius: 6px;
-    font-size: 16px; padding: 4px 8px; cursor: pointer;
-  }
-  #wrap { position: relative; display: flex; justify-content: center; }
-  canvas { display: block; border-radius: 10px; box-shadow: 0 0 40px rgba(111,211,255,.12); }
-  #overlay {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    pointer-events: none;
-  }
-  #overlay .card {
-    pointer-events: auto; width: min(420px, calc(100% - 32px));
-    background: rgba(9,13,20,.93); border: 1px solid var(--line); border-radius: 14px;
-    padding: 22px 22px 18px; text-align: center; box-shadow: 0 10px 50px rgba(0,0,0,.6);
-  }
-  .card h1 {
-    margin: 0; font-size: 34px; letter-spacing: 3px; color: var(--amber);
-    text-shadow: 0 0 14px rgba(255,171,61,.7); font-family: "Arial Black", Impact, sans-serif;
-  }
-  .card .sub { color: var(--cyan); letter-spacing: 2px; font-size: 13px; margin: 4px 0 14px; }
-  .card table { width: 100%; font-size: 13px; border-collapse: collapse; margin: 8px 0 12px; }
-  .card td { padding: 3px 4px; text-align: left; color: var(--text); }
-  .card td.k { color: var(--amber); font-family: Consolas, monospace; white-space: nowrap; }
-  .card .hs { font-family: Consolas, monospace; font-size: 14px; margin: 6px 0 14px; }
-  .card .hs div { display: flex; justify-content: space-between; padding: 2px 30px; }
-  .card .hs div span:last-child { color: var(--amber); }
-  .card h2 { font-size: 13px; letter-spacing: 3px; color: var(--muted); margin: 10px 0 4px; font-weight: 600; }
-  .card button {
-    background: var(--amber); color: #1a0e00; border: 0; border-radius: 8px;
-    font-size: 16px; font-weight: 800; letter-spacing: 2px; padding: 11px 28px; cursor: pointer;
-    box-shadow: 0 0 18px rgba(255,171,61,.5);
-  }
-  .card input {
-    font-size: 18px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
-    background: #05070b; color: var(--amber); text-align: center; width: 70%; margin-bottom: 12px;
-    font-family: Consolas, monospace; letter-spacing: 2px; text-transform: uppercase;
-  }
-  .card .big { font-size: 30px; color: var(--amber); font-family: Consolas, monospace; margin: 6px 0 10px; }
-  .hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#05070b">
+<meta name="description" content="ALU PINBALL 2.0 — neuradna pinball igra za hec (Impol × Alcad edition).">
+<title>Alu Pinball 2.0</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='26' fill='%23b8c4d2'/%3E%3Ccircle cx='24' cy='22' r='8' fill='%23fff'/%3E%3Ccircle cx='32' cy='32' r='26' fill='none' stroke='%23ff7a1a' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/style.css">
 </head>
 <body>
-  <div id="hud">
-    <div class="hud-box"><div class="lbl">ŽOGA</div><div class="val" id="hud-ball">-</div></div>
-    <div><div id="hud-score">0</div><div id="hud-info"></div></div>
-    <div class="hud-box r"><div class="lbl">REKORD</div><div class="val" id="hud-hs">0</div></div>
-    <button id="mute" title="Zvok (tipka O)">🔊</button>
+  <div id="app">
+    <aside id="sideL" class="side">
+      <section class="glass panel score-panel">
+        <div class="lbl">TOČKE</div>
+        <div id="pScore" class="big-score">0</div>
+        <div class="row"><span class="lbl">ŽOGA</span><span id="pBall" class="val">–</span></div>
+        <div class="row"><span class="lbl">BONUS</span><span id="pMult" class="val">×1</span></div>
+      </section>
+      <section class="glass panel">
+        <h3>MISIJE</h3>
+        <ul id="pModes" class="modes"></ul>
+        <div id="pModeNow" class="mode-now"></div>
+      </section>
+      <section class="glass panel">
+        <h3>STANJE</h3>
+        <div id="pState" class="state-grid"></div>
+      </section>
+    </aside>
+
+    <main id="stage">
+      <div id="cab">
+        <div id="backbox">
+          <canvas id="dmdGlow" aria-hidden="true"></canvas>
+          <canvas id="dmd" aria-label="Zaslon točk"></canvas>
+        </div>
+        <div id="pf">
+          <canvas id="view" aria-label="Pinball miza"></canvas>
+          <div id="touchBar">
+            <button id="btnPause" class="tbtn" aria-label="Pavza">❚❚</button>
+            <button id="btnNudge" class="tbtn" aria-label="Tresenje">⇡</button>
+          </div>
+        </div>
+      </div>
+      <div id="touchHint" class="touch-hint">
+        <span>◀ levi flipper</span><span>desni flipper ▶</span>
+      </div>
+    </main>
+
+    <aside id="sideR" class="side">
+      <section class="glass panel">
+        <h3>LESTVICA</h3>
+        <ol id="pBoard" class="board"></ol>
+      </section>
+      <section class="glass panel">
+        <h3>STATISTIKA</h3>
+        <div id="pStats" class="stats-grid"></div>
+      </section>
+      <section class="glass panel keys">
+        <h3>KONTROLE</h3>
+        <div class="keys-grid">
+          <kbd>Z ← ⇧</kbd><span>levi flipper</span>
+          <kbd>M → ⇧</kbd><span>desni flipper</span>
+          <kbd>␣ ↓</kbd><span>izstrelitev (drži)</span>
+          <kbd>B ↑</kbd><span>tresenje</span>
+          <kbd>P Esc</kbd><span>pavza</span>
+          <kbd>O</kbd><span>zvok</span>
+        </div>
+      </section>
+    </aside>
   </div>
-  <div id="wrap">
-    <canvas id="game"></canvas>
-    <div id="overlay"></div>
-  </div>
-  <script src="game.js"></script>
+
+  <div id="overlay" class="overlay"></div>
+  <div id="toast" class="toast"></div>
+  <div id="fps" class="fps"></div>
+  <noscript><p style="color:#fff;text-align:center;margin-top:40vh">Za igro potrebuješ JavaScript.</p></noscript>
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>
