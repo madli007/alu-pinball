@@ -13,6 +13,7 @@ import { UI } from './ui.js';
 import { setupInput } from './input.js';
 import * as Store from './storage.js';
 import { loadLogos } from './logos.js';
+import * as Board from './leaderboard.js';
 
 const $ = id => document.getElementById(id);
 const settings = Store.loadSettings();
@@ -83,18 +84,27 @@ bus.on('gameOver', d => {
   audio.play('gameOver');
   dmd.show({ text: 'KONEC IGRE', sub: Math.round(d.score).toLocaleString('sl-SI'), color: PAL.melt, dur: 4 });
   Store.recordGame(d);
+  Board.refresh();
   ui.refreshBoards();
   dmd.stats = Store.loadStats();
   setTimeout(() => {
     if (game.state !== 'over') return;
-    if (Store.qualifies(d.score)) ui.showInitials(d);
+    if (Board.qualifies(d.score)) ui.showInitials(d);
     else ui.showGameOver(d);
   }, 1600);
 });
 bus.on('quality', d => ui.toast('Kakovost: ' + QUALITY[d.key].ime + ' (samodejno)'));
-dmd.scores = Store.loadScores();
+dmd.scores = Board.scores();
 dmd.stats = Store.loadStats();
-bus.on('gameStart', () => { dmd.scores = Store.loadScores(); });
+bus.on('gameStart', () => { dmd.scores = Board.scores(); Board.refresh(); });
+// skupna lestvica: ob spremembi osveži panele, DMD in odprt zaslon z lestvico
+Board.onChange(() => {
+  ui.refreshBoards();
+  dmd.scores = Board.scores();
+  const top = document.getElementById('uTop'); if (top) top.innerHTML = ui.topHtml();
+});
+Board.refresh();
+setInterval(() => { if (game.state !== 'play' && document.visibilityState === 'visible') Board.refresh(); }, 60000);
 
 /* ---------------- vnos ---------------- */
 const input = setupInput({
@@ -115,7 +125,7 @@ const input = setupInput({
     else app.pause();
   },
   start: () => {
-    if (ui.screen === 'initials') return;
+    if (ui.screen === 'initials' || ui.screen === 'saving') return;
     if (game.state === 'attract' || (game.state === 'over' && ui.screen !== 'none')) app.startGame();
   },
   mute: () => app.setMuted(!settings.muted),

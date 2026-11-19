@@ -175,7 +175,7 @@ export class Game {
     this.playSec = this.time - this.startT;
     this.emit('gameOver', {
       score: this.score, maxCombo: this.maxCombo, maxJackpot: this.maxJackpot,
-      playSec: this.playSec, wizards: this.wizards, modes: this.modesCompleted,
+      playSec: this.playSec, wizards: this.wizards, modes: this.modesCompleted, multiballs: this.mbCount,
     });
   }
 

@@ -30,6 +30,14 @@ export const CFG = {
   },
   skillShot: 182500,          // »od 1825«
 
+  // skupna lestvica (Supabase; tabela in pravila: supabase/scores.sql).
+  // Ključ je javni »publishable« ključ — zaščito zagotavljajo pravila v bazi.
+  // Prazen url = samo lokalna lestvica (localStorage).
+  lestvica: {
+    url: 'https://mzpjgnccrsocgwkrtkeu.supabase.co',
+    kljuc: 'sb_publishable_NJ5YpiVCy4QKA_kCDR66eg_WupxV-0t',
+  },
+
   steviloZogic: 3,
   ballSaveSek: 10,            // ball save po izstrelitvi
   multiballSaveSek: 15,

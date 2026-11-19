@@ -5,6 +5,7 @@
 import { CFG, MODES, PAL, QUALITY, QUALITY_ORDER } from './config.js';
 import { fmt } from './rules.js';
 import * as Store from './storage.js';
+import * as Board from './leaderboard.js';
 import { DW, textWidth } from './render/dmd.js';
 import { logoUrl } from './logos.js';
 
@@ -67,7 +68,7 @@ export class UI {
   }
 
   topHtml() {
-    const s = Store.loadScores().slice(0, 3);
+    const s = Board.scores().slice(0, 3);
     if (!s.length) return '<div class="hint">Lestvica je še prazna — postavi prvi rekord!</div>';
     return `<ol class="board top3">${s.map(e => `<li><span class="n">${esc(e.name)}</span><span class="s">${fmt(e.score)}</span></li>`).join('')}</ol>`;
   }
@@ -88,7 +89,7 @@ export class UI {
           <button class="btn" id="uSettings">NASTAVITVE</button>
         </div>
       </div>
-      ${this.topHtml()}
+      <div id="uTop">${this.topHtml()}</div>
       ${this.controlsHtml()}
       <div class="hint">ENTER za začetek · misije, multiball in finale te čakajo v livarni ${esc(CFG.imena.scoop)}</div>
       <div class="legal">${esc(CFG.opomba)}</div>`, 'start');
@@ -145,12 +146,12 @@ export class UI {
   }
 
   showScores(back, highlight = -1) {
-    const s = Store.loadScores(), st = Store.loadStats();
+    const s = Board.scores(), st = Store.loadStats();
     const rows = s.length ? s.map((e, i) => `<li class="${i === highlight ? 'new' : ''}"><span class="n">${esc(e.name)}</span><span class="s">${fmt(e.score)}</span></li>`).join('')
       : '<li class="empty"><span></span><span>Še ni rekordov — bodi prvi!</span><span></span></li>';
     const mins = Math.round(st.playSec / 60);
     this.open(`
-      <div class="h2 gold-t">LESTVICA</div>
+      <div class="h2 gold-t">${Board.isGlobal() ? 'SKUPNA LESTVICA' : 'LESTVICA'}</div>
       <ol class="board" style="text-align:left;margin:10px 0 14px">${rows}</ol>
       <div class="stats-grid" style="text-align:left">
         <span>Odigranih iger</span><span>${st.games}</span>
@@ -192,7 +193,7 @@ export class UI {
     const saved = Store.load('lastName', '');
     if (saved && saved.length === 3) last = saved;
     this.ini = { letters: [...last].map(c => Math.max(0, CHARS.indexOf(c))), pos: 0, score: d.score, data: d };
-    const rank = (() => { const s = Store.loadScores(); let r = 1; for (const e of s) if (e.score >= d.score) r++; return r; })();
+    const rank = (() => { const s = Board.scores(); let r = 1; for (const e of s) if (e.score >= d.score) r++; return r; })();
     this.open(`
       <div class="h2 gold-t">NOV REKORD!</div>
       <div class="rank">NASLOVNICA METALURGA!</div>
@@ -250,10 +251,13 @@ export class UI {
     s.saved = true;
     const name = s.letters.map(i => CHARS[i]).join('').trim() || '???';
     Store.save('lastName', s.letters.map(i => CHARS[i]).join(''));
-    const idx = Store.addScore(name, s.score);
-    this.refreshBoards(idx);
     this.dmdOverride = null;
-    this.showScores('over', idx);
+    this.open(`<div class="h2">SHRANJUJEM …</div><div class="hint">${Board.enabled() ? 'pošiljam na skupno lestvico' : ''}</div>`, 'saving');
+    Board.submit(name, s.data).then(r => {
+      if (r.global === false) this.toast('Skupna lestvica: ' + r.error + ' — rekord je shranjen lokalno', 5);
+      this.refreshBoards(r.rank);
+      if (this.screen === 'saving') this.showScores('over', r.rank);
+    });
   }
 
   /** tipke v menijih; vrne true, če je tipko porabil meni */
@@ -293,7 +297,8 @@ export class UI {
   }
 
   refreshBoards(highlight = -1) {
-    const s = Store.loadScores();
+    const s = Board.scores();
+    const ttl = $('pBoardTitle'); if (ttl) ttl.textContent = Board.isGlobal() ? 'SKUPNA LESTVICA' : 'LESTVICA';
     $('pBoard').innerHTML = s.length ? s.map((e, i) => `<li class="${i === highlight ? 'new' : ''}"><span class="n">${esc(e.name)}</span><span class="s">${fmt(e.score)}</span></li>`).join('')
       : '<li class="empty"><span></span><span>Še ni rekordov</span><span></span></li>';
     const st = Store.loadStats();

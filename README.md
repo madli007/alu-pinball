@@ -98,8 +98,24 @@ vse je vredno jackpot, poseben svetlobni šov in glasba. Ko ostane ena žogica, 
 ## Rekordi
 
 Top 10 z arkadnim vpisom 3 inicialk (flipperja ali puščici menjata črko, presledek potrdi, lahko tudi tipkaš; na dotik ▲▼).
-Statistika (igre, najdaljši combo, največji jackpot, misije, finale, čas) — vse **samo v `localStorage`**
-(ključi `aluPinball2.*`); če shramba ni na voljo, igra deluje naprej.
+Statistika (igre, najdaljši combo, največji jackpot, misije, finale, čas) je v `localStorage` (ključi `aluPinball2.*`).
+
+### Skupna lestvica (Supabase)
+
+Rekordi vseh igralcev se shranjujejo v Supabase, brez lastnega strežnika: igra kliče REST API z navadnim `fetch`.
+Panel in zaslon z rekordi pokažeta **SKUPNO LESTVICO**, osvežita se ob nalaganju, ob koncu igre in vsako minuto.
+Rekord se vedno shrani tudi lokalno; če skupna lestvica ni dosegljiva ali rekord zavrne, igra to pove in pokaže lokalno lestvico.
+
+- Nastavitev: `CFG.lestvica` v `src/config.js` (URL projekta in javni *publishable* ključ). Prazen `url` = samo lokalno.
+- Tabela in pravila: [`supabase/scores.sql`](supabase/scores.sql) — enkrat zaženi v Supabase SQL Editorju (lahko večkrat).
+- Zaščita pred goljufanjem:
+  - igralec rekorde samo dodaja in bere (ime, točke, datum), ne more jih spreminjati ali brisati;
+  - ime 1–3 znaki, točke deljive z 10 in največ 500 mio, igra vsaj 20 s, datum nastavi baza;
+  - smiselnost: največ 400.000 točk na sekundo, nad 5 mio vsaj multiball ali misija, nad 100 mio finale,
+    finale zahteva 4 misije (meje izmerjene z botom na 135 igrah, z veliko rezervo);
+  - največ 10 rekordov na minuto skupaj, isto ime največ enkrat na 20 s.
+- Kdor dobro pozna pravila, lahko še vedno pošlje verjeten izmišljen rezultat. Takega izbriši v Supabase
+  (**Table Editor → scores**). Popolna zaščita bi zahtevala ponovno odigranje igre na strežniku (Edge Function).
 
 ## Struktura
 
@@ -122,6 +138,8 @@ src/render/renderer.js kamera, efekti, kakovost, 2D rezerva
 src/ui.js             zasloni, nastavitve, inicialke, paneli
 src/input.js          tipkovnica, dotik, gamepad
 src/storage.js        localStorage (try/catch)
+src/leaderboard.js    skupna lestvica (Supabase REST) z lokalno rezervo
+supabase/scores.sql   tabela, pravila in preverjanje za skupno lestvico
 src/main.js           povezava vsega in glavna zanka
 tests/tests.js        streli s flipperjev, rampa, stresni test (brez tuneliranja), ball search, pravila, bot
 ```
