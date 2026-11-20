@@ -34,8 +34,8 @@ export const CFG = {
   // Ključ je javni »publishable« ključ — zaščito zagotavljajo pravila v bazi.
   // Prazen url = samo lokalna lestvica (localStorage).
   lestvica: {
-    url: 'https://mzpjgnccrsocgwkrtkeu.supabase.co',
-    kljuc: 'sb_publishable_NJ5YpiVCy4QKA_kCDR66eg_WupxV-0t',
+    url: 'https://ygdjxwchjfvzigasmayg.supabase.co',
+    kljuc: 'sb_publishable_tIyU-rppDYcHt6AxIu9ahA_P1ofVudB',
   },
 
   steviloZogic: 3,
